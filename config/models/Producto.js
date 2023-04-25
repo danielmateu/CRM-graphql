@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
-const ProductosSchema = mongoose.Schema({
+const ProductoSchema = mongoose.Schema({
     nombre: {
         type: String,
         required: true,
@@ -22,4 +22,4 @@ const ProductosSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model("Producto", ProductosSchema);
+module.exports = mongoose.model("Producto", ProductoSchema);

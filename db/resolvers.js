@@ -1,5 +1,5 @@
 const Usuario = require('../config/models/Usuario');
-const Product = require('../config/models/Producto');
+const Producto = require('../config/models/Producto');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -63,6 +63,17 @@ const resolvers = {
             // Crear el token
             return {
                 token: crearToken(existeUsuario, process.env.SECRETA, '24h')
+            }
+        },
+        nuevoProducto: async (_, { input }) => {
+            try {
+                const producto = new Producto(input);
+                // Almacenar en la base de datos
+                const resultado = await producto.save();
+
+                return resultado;
+            } catch (error) {
+                console.log(error);
             }
         }
     },
