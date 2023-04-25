@@ -4,6 +4,7 @@ const Cliente = require('../config/models/Cliente');
 
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Pedido = require('../config/models/Pedido');
 
 // Helpers
 const crearToken = (usuario, secreta, expiresIn) => {
@@ -213,6 +214,49 @@ const resolvers = {
             await Cliente.findOneAndDelete({ _id: id });
 
             return "Cliente eliminado";
+        },
+        nuevoPedido: async (_, { input }, ctx) => {
+            const { cliente } = input;
+
+            // Verificar si el cliente existe
+            let clienteExiste = await Cliente.findById(cliente);
+
+            if (!clienteExiste) {
+                throw new Error('El cliente no existe');
+            }
+
+            // Verificar si el cliente es del vendedor
+            if (clienteExiste.vendedor.toString() !== ctx.usuario.id) {
+                throw new Error('No tienes las credenciales');
+            }
+
+            // Revisar que el stock este disponible
+            for await (const articulo of input.pedido) {
+                const { id } = articulo;
+                const producto = await Producto.findById(id);
+                // console.log(producto);
+
+                if (articulo.cantidad > producto.existencia) {
+                    throw new Error(`El articulo: ${producto.nombre} excede la cantidad disponible`);
+                } else {
+                    // Restar la cantidad a lo disponible
+                    producto.existencia = producto.existencia - articulo.cantidad;
+
+                    await producto.save();
+                }
+            }
+            // console.log('Después del error...');
+            // Asignarle un vendedor
+            const nuevoPedido = new Pedido(input);
+
+            // Asignarle un vendedor
+            nuevoPedido.vendedor = ctx.usuario.id;
+
+            // Guardarlo en la base de datos
+            const resultado = await nuevoPedido.save();
+
+            return resultado;
+
         }
 
     },
