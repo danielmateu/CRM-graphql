@@ -1,4 +1,5 @@
 const Usuario = require('../config/models/Usuario');
+const Product = require('../config/models/Producto');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
