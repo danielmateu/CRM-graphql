@@ -330,9 +330,23 @@ const resolvers = {
             // Guardar el pedido
             const resultado = await Pedido.findOneAndUpdate({ _id: id }, input, { new: true });
             return resultado;
+        },
+        eliminarPedido: async (_, { id }, ctx) => {
+            // Verificar si el pedido existe
+            const pedido = await Pedido.findById(id);
+
+            if (!pedido) {
+                throw new Error('El pedido no existe');
+            }
+
+            // Verificar si el vendedor es quien lo borra
+            if (pedido.vendedor.toString() !== ctx.usuario.id) {
+                throw new Error('No tienes las credenciales');
+            }
+
+            // Eliminar el pedido
+            await Pedido.findByIdAndDelete({ _id: id });
         }
-
-
     },
 }
 
