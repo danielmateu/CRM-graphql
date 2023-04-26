@@ -101,6 +101,10 @@ const resolvers = {
             // Retornar el resultado
             return pedido;
         },
+        obtenerPedidosEstado: async (_, { estado }, ctx) => {
+            const pedidos = await Pedido.find({ vendedor: ctx.usuario.id, estado });
+            return pedidos;
+        },
     },
     Mutation: {
         nuevoUsuario: async (_, { input }) => {
@@ -346,6 +350,8 @@ const resolvers = {
 
             // Eliminar el pedido
             await Pedido.findByIdAndDelete({ _id: id });
+
+            return "Pedido eliminado";
         }
     },
 }
