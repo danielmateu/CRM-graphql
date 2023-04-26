@@ -105,6 +105,9 @@ const typeDefs = gql`
         obtenerClientesVendedor: [Cliente]
         obtenerCliente(id: ID!) : Cliente
 
+        # Pedidos
+        obtenerPedidos: [Pedido]
+
     }
 
     type Mutation {
