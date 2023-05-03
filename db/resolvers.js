@@ -249,7 +249,7 @@ const resolvers = {
         },
         nuevoCliente: async (_, { input }, ctx) => {
             // Verificar si el cliente está registrado
-            console.log(ctx);
+            // console.log(ctx);
             const cliente = await Cliente.findOne({ email: input.email });
             // const { email } = input;
             // const cliente = await Cliente.findOne({ email });
